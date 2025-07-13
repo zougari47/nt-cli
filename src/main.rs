@@ -18,6 +18,7 @@ fn main() {
 
     match args.next() {
         Some(arg) if arg == "-s" || arg == "--show" => show_notes(),
+        Some(arg) if arg == "-d" || arg == "--delete" => delete_notes(),
         Some(note) => add_note(note),
         None => eprintln!("No note provided. Please provide a note wrapped in double quotes."),
     }
@@ -77,6 +78,19 @@ fn show_notes() {
         println!("- {} {}", "NOTE:".yellow().bold(), note.body);
         println!("\n------------------------- \n")
     }
+}
+
+fn delete_notes() {
+    let path = match get_notes_file_path() {
+        Some(p) => p,
+        None => {
+            eprintln!("Failed to get notes file path.");
+            return; // todo -> handle error appropriately
+        }
+    };
+
+    save_notes(&path, &Vec::new());
+    println!("All notes deleted ✅");
 }
 
 fn get_notes_file_path() -> Option<PathBuf> {
